@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html dir="rtl">
+  <head>
+    <base target="_top" />
+    <style>
+      body { font-family: Tahoma, Arial; padding: 12px; }
+      label { display: block; margin-top: 10px; font-weight: bold; }
+      input, select, textarea { width: 100%; padding: 6px; box-sizing: border-box; }
+      button { margin-top: 14px; width: 100%; padding: 10px; background: #1f4e78; color: #fff; border: 0; cursor: pointer; }
+      #msg { margin-top: 10px; }
+    </style>
+  </head>
+  <body>
+    <form id="f">
+      <label>الاسم *</label><input name="name" required />
+      <label>الهاتف</label><input name="phone" placeholder="09xxxxxxxx" />
+      <label>البريد</label><input name="email" type="email" />
+      <label>الكورس *</label>
+      <select name="course" required>
+        <option value="">— اختر —</option>
+        <? courses.forEach(function (c) { ?>
+          <option value="<?= c.code ?>"><?= c.name ?> (<?= c.code ?>)</option>
+        <? }); ?>
+      </select>
+      <label>ملاحظات</label><textarea name="notes" rows="3"></textarea>
+      <button type="submit">حفظ</button>
+    </form>
+    <div id="msg"></div>
+    <script>
+      document.getElementById('f').addEventListener('submit', function (e) {
+        e.preventDefault();
+        var f = e.target, msg = document.getElementById('msg');
+        msg.textContent = '...جاري الحفظ';
+        google.script.run
+          .withSuccessHandler(function (id) { msg.style.color = 'green'; msg.textContent = 'تم ✅ ' + id; f.reset(); })
+          .withFailureHandler(function (err) { msg.style.color = 'red'; msg.textContent = err.message; })
+          .saveTrainee(f);
+      });
+    </script>
+  </body>
+</html>
